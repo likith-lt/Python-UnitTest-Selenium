@@ -2,6 +2,7 @@ import os
 import unittest
 import sys
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 
 username = os.environ.get("LT_USERNAME")
 access_key = os.environ.get("LT_ACCESS_KEY")
@@ -15,8 +16,8 @@ class FirstSampleTest(unittest.TestCase):
             'LT:Options': {
                 "user": username,
                 "accessKey": access_key,
-                "build": "UnitTest-Selenium-Sample",
-                "name": "UnitTest-Selenium-Test",
+                "build": "UnitTest - Python",
+                "name": "UnitTest Demo Test",
                 "platformName": "Windows 11",
                 "selenium_version": "4.0.0"
             },
@@ -34,33 +35,48 @@ class FirstSampleTest(unittest.TestCase):
     def tearDown(self):
         self.driver.quit()
 
-    def test_unit_user_should_able_to_add_item(self):
+    def test_demo_site(self):
         # try:
         driver = self.driver
 
         # Url
-        driver.get("https://lambdatest.github.io/sample-todo-app/")
+        print('Loading URL')
+        driver.get("https://stage-demo.lambdatest.com/")
 
-        # Click on check box
-        check_box_one = driver.find_element_by_name("li1")
-        check_box_one.click()
+        # Let's select the location
+        driver.find_element(By.ID, "headlessui-listbox-button-1").click()
+        location = driver.find_element(By.ID, "Bali")
+        location.click()
+        print("Location is selected as Bali.")
 
-        # Click on check box
-        check_box_two = driver.find_element_by_name("li2")
-        check_box_two.click()
+        # Let's select the number of guests
+        driver.find_element(By.ID, "headlessui-listbox-button-5").click()
+        guests = driver.find_element(By.ID, "2")
+        guests.click()
+        print("Number of guests are selected.")
 
-        # Enter item in textfield
-        textfield = driver.find_element_by_id("sampletodotext")
-        textfield.send_keys("Yey, Let's add it to list")
+        # Searching for the results
+        search = driver.find_element(By.XPATH, "//*[@id='search']")
+        search.click()
+        driver.implicitly_wait(3)
 
-        # Click on add button
-        add_button = driver.find_element_by_id("addbutton")
-        add_button.click()
+        # Let's select one of the hotels for booking
+        reserve = driver.find_element(By.ID, "reserve-now")
+        reserve.click()
+        driver.implicitly_wait(3)
+        proceed = driver.find_element(By.ID, "proceed")
+        proceed.click()
+        driver.implicitly_wait(3)
+        print("Booking is confirmed.")
 
-        # Verified added item
-        added_item = driver.find_element_by_xpath(
-            "//span[@class='done-false']").text
-        print(added_item)
+        # Let's download the invoice
+        download = driver.find_element(By.ID, "invoice")
+        if (download.is_displayed()):
+            download.click()
+            driver.execute_script("lambda-status=passed")
+            print("Tests are run successfully!")
+        else:
+            driver.execute_script("lambda-status=failed")
 
 
 if __name__ == "__main__":
